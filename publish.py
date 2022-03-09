@@ -63,7 +63,6 @@ class Data(BaseModel):
             dates[article.date.year] = dates.get(article.date.year, set())
             dates[article.date.year].add(article.date.month)
 
-        breakpoint()
         history = [{"year": k, "months": v} for k, v in dates.items()]
         values["tags"] = tags
         values["history"] = history
