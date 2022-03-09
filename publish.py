@@ -1,17 +1,18 @@
 import locale
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+import os
+from typing import Optional
 
 import markdown
 from pydantic import BaseModel, root_validator, validator
 from slugify import slugify
 
-LOCALE = "pt_BR.utf8"
-TIMEZONE = "America/Recife"
-DATE_FORMAT = "%d/%m/%Y"
-RELATIVE_PATH = "articles"
-OUTPUT = "data/data.json"
+LOCALE = os.getenv("LOCALE", "pt_BR.utf8")
+TIMEZONE = os.getenv("TIMEZONE", "America/Recife")
+DATE_FORMAT = os.getenv("DATE_FORMAT", "%d/%m/%Y")
+RELATIVE_PATH = os.getenv("RELATIVE_PATH", "articles")
+OUTPUT = os.getenv("OUTPUT", "data/data.json")
 
 p = Path(__file__).parent / RELATIVE_PATH
 locale.setlocale(locale.LC_ALL, LOCALE)
@@ -24,7 +25,7 @@ class Article(BaseModel):
     abstract: str
     text: str
     toc: str
-    date: datetime
+    date: Optional[datetime]
     author: str
     tags: set[str]
 
@@ -39,11 +40,17 @@ class Article(BaseModel):
     @root_validator(pre=True)
     def define_id(cls, values):
         title = values.get("title")[0]
-        date = values.get("date")[0]
-        date = datetime.strptime(date, DATE_FORMAT)
+        date = values.get("date")[0] or None
+        if date is not None:
+            date = datetime.strptime(date, DATE_FORMAT)
+            values["dates"] = {"year": date.year, "month": date.month, "day": date.day}
+            values["id"] = f"{date.year}-{date.month}-{date.day}-{slugify(title)}"
+        else:
+            values["dates"] = {}
+            values["id"] = f"{slugify(title)}"
+
         values["date"] = date
-        values["dates"] = {"year": date.year, "month": date.month, "day": date.day}
-        values["id"] = f"{date.year}-{date.month}-{date.day}-{slugify(title)}"
+
         return values
 
 

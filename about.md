@@ -1,14 +1,8 @@
-title: Daniel França
+title: John Doe
 subtitle: test
 abstract:
-date: 02/03/2022
-author: Daniel
+date:
+author: John Doe
 tags:
 
-Esse é um **texto** de _test_.
-
-## test 2
-
-bom test
-
-## modified
+Hello world

@@ -1,0 +1,31 @@
+name: "publish"
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - run: pip install -r requeriments.txt
+      - run: python publish.py
+      - run: ls ./data
+      - name: gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          external_repository: dcruzf/fast-vue
+          publish_dir: ./data
+          destination_dir: ./data
+          keep_files: true
