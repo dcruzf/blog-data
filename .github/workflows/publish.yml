@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
-      - run: locale-gen pt_BR.UTF-8
+      - run: sudo locale-gen pt_BR.UTF-8
       - run: pip install -r requeriments.txt
       - run: python publish.py
       - run: ls ./data
