@@ -10,7 +10,8 @@ from slugify import slugify
 LOCALE = "pt_BR.utf8"
 TIMEZONE = "America/Recife"
 DATE_FORMAT = "%d/%m/%Y"
-RELATIVE_PATH = "data"
+RELATIVE_PATH = "articles"
+OUTPUT = "data/data.json"
 
 p = Path(__file__).parent / RELATIVE_PATH
 locale.setlocale(locale.LC_ALL, LOCALE)
@@ -88,4 +89,6 @@ def get_about():
     return get_articles([p.parent / "about.md"])[0]
 
 
-print(Data(about=get_about(), articles=get_articles()))
+data = Data(about=get_about(), articles=get_articles())
+with open(OUTPUT, "w") as f:
+    f.write(data.json())
