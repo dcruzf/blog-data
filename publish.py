@@ -1,11 +1,11 @@
 import locale
+import os
 from datetime import datetime
 from pathlib import Path
-import os
 from typing import Optional
 
 import markdown
-from pydantic import BaseModel, root_validator, validator
+from pydantic import BaseModel, root_validator, validator, parse_file_as
 from slugify import slugify
 
 LOCALE = os.getenv("LOCALE", "pt_BR.utf8")
@@ -16,6 +16,17 @@ OUTPUT = os.getenv("OUTPUT", "data/data.json")
 
 p = Path(__file__).parent / RELATIVE_PATH
 locale.setlocale(locale.LC_ALL, LOCALE)
+
+
+class Tag(BaseModel):
+    tagId: str
+    name: str
+    icon: str = "person"
+
+    @root_validator(pre=True)
+    def define_ID(cls, values):
+        values["tagId"] = values["tagId"] or slugify(values["name"])
+        return values
 
 
 class Article(BaseModel):
@@ -35,7 +46,7 @@ class Article(BaseModel):
 
     @validator("tags", pre=True)
     def tag_list(cls, v):
-        return v[0].split()
+        return [slugify(tag) for tag in v[0].split()]
 
     @root_validator(pre=True)
     def define_id(cls, values):
@@ -55,7 +66,7 @@ class Article(BaseModel):
 
 
 class Data(BaseModel):
-    tags: list[str]
+    tags: list[Tag]
     history: list[dict]
     about: Article
     articles: list[Article]
@@ -63,15 +74,8 @@ class Data(BaseModel):
     @root_validator(pre=True)
     def feed_data(cls, values):
         articles = values.get("articles")
-        tags = set()
         dates = {}
-        for article in articles:
-            tags |= set(article.tags)
-            dates[article.date.year] = dates.get(article.date.year, set())
-            dates[article.date.year].add(article.date.month)
-
         history = [{"year": k, "months": v} for k, v in dates.items()]
-        values["tags"] = tags
         values["history"] = history
         return values
 
@@ -95,6 +99,8 @@ def get_about():
     return get_articles([p.parent / "about.md"])[0]
 
 
-data = Data(about=get_about(), articles=get_articles())
-with open(OUTPUT, "w") as f:
-    f.write(data.json())
+if __name__ == "__main__":
+    tags = parse_file_as(list[Tag], p / "tags.json")
+    data = Data(about=get_about(), articles=get_articles(), tags=tags)
+    with open(OUTPUT, "w") as f:
+        f.write(data.json())
