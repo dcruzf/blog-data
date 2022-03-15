@@ -85,6 +85,7 @@ md = markdown.Markdown(extensions=["extra", "meta", "toc"])
 
 def get_articles(files=None):
     files = files or list(p.glob("*.md"))
+    breakpoint()
     articles = []
     for f in files:
         html_res = md.convert(f.read_text())
