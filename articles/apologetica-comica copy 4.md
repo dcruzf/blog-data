@@ -1,4 +1,4 @@
-title: Apologética Cômica
+title: Apologética Cômica3
 subtitle: Qualquer um que esteja mais do que superficialmente familiarizado com o mundo bizarro e irracional da filosofia "reformada" holandesa pode simpatizar com o desejo de Sproul, Gerstner e Lindsley (daqui em diante SG&L) de apresentar uma defesa racional da fé cristã. Um representante americano do pensamento holandês é Cornelius Van Til, do Seminário Teológico de Westminster.
 abstract: Qualquer um que esteja mais do que superficialmente familiarizado com o mundo bizarro e irracional da filosofia "reformada" holandesa pode simpatizar com o desejo de Sproul, Gerstner e Lindsley (daqui em diante SG&L) de apresentar uma defesa racional da fé cristã. Um representante americano do pensamento holandês é Cornelius Van Til, do Seminário Teológico de Westminster.
 date: 07/08/2020
